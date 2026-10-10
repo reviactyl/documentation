@@ -1,0 +1,43 @@
+$schema: https://api.gitbook.com/gitbook-docs.yaml
+site:
+  title: Reviactyl
+  structure:
+    - type: section
+      key: section-1
+      title: Project
+      path: project
+      description: ""
+      default: true
+      children:
+        - type: space
+          key: space-1
+          title: Project
+          path: untitled
+          default: true
+          content:
+            directory: ./project
+    - type: section
+      key: section-2
+      title: Client API
+      path: client-api
+      description: ""
+      children:
+        - type: space
+          key: space-2
+          title: Client API
+          path: api-reference
+          default: true
+          content:
+            directory: ./client-api
+    - type: section
+      key: section-3
+      title: Application API
+      path: application-api
+      children:
+        - type: space
+          key: space-3
+          title: Application API
+          path: api-reference
+          default: true
+          content:
+            directory: ./application-api
