@@ -6,6 +6,7 @@ site:
       key: section-4
       title: Home
       path: home
+      default: true
       children:
         - type: space
           key: space-4
@@ -20,7 +21,6 @@ site:
       title: Project
       path: project
       description: ""
-      default: true
       children:
         - type: space
           key: space-1
