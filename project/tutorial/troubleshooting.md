@@ -12,7 +12,7 @@ tail -n 100 /var/www/reviactyl/storage/logs/laravel-$(date +%F).log
 
 When you run the command above, you'll probably be hit with a huge wall of text that might scare you. Fear not, this is simply a stacktrace leading to the cause of the error, and you can actually ignore almost all of it when looking for the cause of the error. Lets take a look at some example output below, which has been truncated to make this easier to follow with.
 
-```
+```f#
 #70 /srv/www/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(116): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter(Object(Illuminate\Http\Request))
 #71 /srv/www/public/index.php(53): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
 #72 {main}

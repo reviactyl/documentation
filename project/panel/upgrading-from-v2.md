@@ -8,7 +8,7 @@ You will need to have root access to your server in order to run and use this pa
 
 {% stepper %}
 {% step %}
-## Remove Reviactyl Old Files
+## Clean-up Reviactyl Old Files
 
 {% hint style="warning" %}
 **Pre-caution!**
@@ -20,6 +20,19 @@ Make sure you have saved your `.env` file somewhere else in case of risk of losi
 cd /var/www/reviactyl
 rm -rf *
 ```
+{% endstep %}
+
+{% step %}
+## Install PHP Intl Extension
+
+Reviactyl v26 requires PHP 8.3 or newer and the `intl` extension. The 2.x installation guide does not install `intl`, so add it:
+
+```bash
+apt install php8.3-intl
+```
+
+If `php -v` shows a version older than 8.3. Make sure to upgrade your PHP First.\
+<br>
 {% endstep %}
 
 {% step %}

@@ -28,3 +28,4 @@
 * [MySQL Setup](tutorial/mysql-setup.md)
 * [Panel in Docker](tutorial/panel-in-docker.md)
 * [Troubleshooting](tutorial/troubleshooting.md)
+* [Upgrading PHP](tutorial/upgrading-php.md)
