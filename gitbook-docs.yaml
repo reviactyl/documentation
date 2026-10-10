@@ -6,14 +6,14 @@ site:
       key: section-4
       title: Home
       path: home
+      description: ""
       default: true
       children:
         - type: space
           key: space-4
-          title: Help Center
+          title: Home
           path: help-center
           default: true
-          draft: true
           content:
             directory: ./home/help-center
     - type: section
