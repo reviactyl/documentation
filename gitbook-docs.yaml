@@ -29,6 +29,7 @@ site:
           default: true
           content:
             directory: ./project
+            language: en
     - type: section
       key: section-2
       title: Client API
@@ -42,6 +43,7 @@ site:
           default: true
           content:
             directory: ./client-api
+            language: en
     - type: section
       key: section-3
       title: Application API
