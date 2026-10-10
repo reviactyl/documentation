@@ -2,7 +2,9 @@
 
 ## Minimum PHP Requirements
 
-PHP 8.2 or previous are no longer supported by Reviactyl v26. You need to upgrade php to minimum of 8.3 or higher (8.5 is recommended). Alternatively you can use [Reviactyl v2](https://v2.reviactyl.app/)
+PHP 8.2 or previous are no longer supported by Reviactyl v26. You need to upgrade php to minimum of 8.3 or higher (8.5 is recommended).
+
+See [Upgrading PHP Here](../tutorial/upgrading-php.md).
 
 You will need to have root access to your server in order to run and use this panel.
 
@@ -31,7 +33,7 @@ Reviactyl v26 requires PHP 8.3 or newer and the `intl` extension. The 2.x instal
 apt install php8.3-intl
 ```
 
-If `php -v` shows a version older than 8.3. Make sure to upgrade your PHP First.\
+If `php -v` shows a version older than 8.3. Make sure to [upgrade your PHP First.](../tutorial/upgrading-php.md)\
 <br>
 {% endstep %}
 

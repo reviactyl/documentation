@@ -6,7 +6,9 @@
 
 ## Minimum PHP Requirements
 
-PHP 8.2 or previous are no longer supported by Reviactyl v26. You need to upgrade php to minimum of 8.3 or higher (8.5 is recommended). Alternatively you can use [Reviactyl v2](https://v2.reviactyl.app/)
+PHP 8.2 or previous are no longer supported by Reviactyl v26. You need to upgrade php to minimum of 8.3 or higher (8.5 is recommended).
+
+See [Upgrading PHP Here](../tutorial/upgrading-php.md).
 
 You will need to have root access to your server in order to run and use this panel.
 
@@ -16,12 +18,26 @@ Make sure you have saved your `.env` file somewhere else in case of risk of losi
 
 {% stepper %}
 {% step %}
-## Remove Pterodactyl Old Files
+## Clean-up Pterodactyl Old Files
 
 ```bash
 cd /var/www/pterodactyl
 rm -rf *
 ```
+{% endstep %}
+
+{% step %}
+## Install PHP Intl Extension
+
+Reviactyl v26 requires PHP 8.3 or newer and the `intl` extension. The Pterodactyl installation guide does not install `intl`, so add it:
+
+```bash
+apt install php8.3-intl
+```
+
+If `php -v` shows a version older than 8.3. Make sure to [upgrade your PHP First.](../tutorial/upgrading-php.md)
+
+
 {% endstep %}
 
 {% step %}
