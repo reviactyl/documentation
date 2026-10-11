@@ -10,3 +10,10 @@
 * [Backend Development](extensions/backend-development.md)
 * [Packaging Extension](extensions/packaging-extension.md)
 * [Publishing Extension](extensions/publishing-extension.md)
+
+## Eggs
+
+***
+
+* [Creating Custom Eggs](creating-custom-eggs.md)
+* [Creating a Custom Docker Image](creating-a-custom-docker-image.md)
