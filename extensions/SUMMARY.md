@@ -1,0 +1,12 @@
+# Table of contents
+
+* [Introduction](README.md)
+
+## Extensions
+
+* [Getting Started](extensions/getting-started.md)
+* [Building Extensions](extensions/building-extensions.md)
+* [Frontend Development](extensions/frontend-development.md)
+* [Backend Development](extensions/backend-development.md)
+* [Packaging Extension](extensions/packaging-extension.md)
+* [Publishing Extension](extensions/publishing-extension.md)
