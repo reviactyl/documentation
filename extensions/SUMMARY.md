@@ -17,3 +17,8 @@
 
 * [Creating Custom Eggs](creating-custom-eggs.md)
 * [Creating a Custom Docker Image](creating-a-custom-docker-image.md)
+
+## Customization
+
+* [Building Panel](customization/building-panel.md)
+* [Building Agent](customization/building-agent.md)
