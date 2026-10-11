@@ -60,13 +60,13 @@ site:
             language: en
     - type: section
       key: section-5
-      title: Extensions
-      path: extensions
-      icon: puzzle-piece
+      title: Development
+      path: development
+      description: ""
       children:
         - type: space
           key: space-5
-          title: Extensions
+          title: Development
           path: extensions
           default: true
           draft: true
