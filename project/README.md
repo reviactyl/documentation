@@ -34,17 +34,17 @@ In addition to our standard nest of supported games, our community is constantly
 
 ### Core Team Members
 
-| **Name**        | **Discord**    | **Role**                    |
-| --------------- | -------------- | --------------------------- |
-| Brijesh Poojary | `bijjuxd`      | Lead Developer / Maintainer |
-| wylayy          | `wylayy`       | Project Developer           |
-| GunnableScum    | `gunnablescum` | Project Developer           |
+| **Name**        | **Discord** | **Role**                    |
+| --------------- | ----------- | --------------------------- |
+| Brijesh Poojary | `bijjuxd`   | Lead Developer / Maintainer |
+| Jason           | `jasonzlii` | Project Developer           |
+| wylayy          | `wylayy`    | Project Developer           |
 
 ### Contributors
 
 Contributors help the development of Reviactyl panel. To start contributing you have to [fork this repository](https://github.com/reviactyl/panel/fork) and [open a pull request](https://github.com/reviactyl/panel/compare).
 
-[![](https://contrib.rocks/image?repo=reviactyl/panel)](https://github.com/reviactyl/panel/graphs/contributors)
+<figure><img src="https://contrib.rocks/image?repo=reviactyl/panel" alt=""><figcaption></figcaption></figure>
 
 ### Sponsors
 
