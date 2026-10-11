@@ -1,7 +1,7 @@
 # Table of contents
 
 * [API Documentation](README.md)
-* [Client API Impersonation](client-api-impersonation.md)
+* [Client API Impersonation](impersonation.md)
 * ```yaml
   type: builtin:openapi
   props:
