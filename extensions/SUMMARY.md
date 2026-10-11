@@ -13,10 +13,8 @@
 
 ## Eggs
 
-***
-
-* [Creating Custom Eggs](creating-custom-eggs.md)
-* [Creating a Custom Docker Image](creating-a-custom-docker-image.md)
+* [Creating Custom Eggs](eggs/creating-custom-eggs.md)
+* [Creating a Custom Docker Image](eggs/creating-a-custom-docker-image.md)
 
 ## Customization
 

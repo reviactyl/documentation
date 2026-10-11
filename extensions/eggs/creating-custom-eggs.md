@@ -16,11 +16,11 @@ The default start command is also required, however it can be changed per-option
 
 After creating the service, in the bottom right of the page you should see a button titled `New Egg`, press it.
 
-<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
 
 You will be taken to a new service option page which is where most of the configuration happens. The first thing you need to do is select your service that you created previously from the `Associated Nest` dropdown.
 
-<figure><img src=".gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
 
 After that, enter an Option Name to describe it, in this case I am using `Widget`. You will also need to provide a _valid_ docker image, as well as a start command to be assigned to servers under this service option (remember, this can be tweaked per-server if needed).
 
@@ -30,7 +30,7 @@ _Docker images must be specifically designed to work with Reviactyl Panel._ You 
 
 This is perhaps the most important step in this service option configuration, as this tells the Daemon how to run everything.
 
-<figure><img src=".gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
 
 The first field you'll encounter is `Copy Settings From`. The default selection is `None`. That is expected, and okay. This dropdown is discussed at the end of this article.
 
@@ -116,7 +116,7 @@ That concludes basic service option configuration.
 
 As mentioned above, there is a unique `Copy Settings From` dropdown when adding a new option. This gives you the ability to, as the name suggests, copy settings defined above from a different option.
 
-<figure><img src=".gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
 
 In the panel, we use this to copy settings that remain the same between similar service options, such as many of the Minecraft options.
 
@@ -132,7 +132,7 @@ _Please note that `Copy Settings From` does not support nested copies, you can o
 
 One of the great parts of the Egg Variables is the ability to define specific variables that users and/or admins can control to tweak different settings without letting users modify the startup command. To create new variables, or edit existing ones, visit the new service option you created, and click the `Variables` tab at the top of the page. Lets take a look at an example variable that we can create.
 
-<figure><img src=".gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure>
 
 The name and description are rather self-explanitory, so I'll skip down to the `Environment Variable` box. This should be an Alpha-Numeric name with underscores, and should be uppercase. This will be the name of the environment variable which can be accessed in the startup command as `{{WOOZLE_WOO}}`, within file modifications as `{{env.WOOZLE_WOO}}`, or just `${WOOZLE_WOO}` in any shell scripts (it is passed through in the environment). We also define a default value for this environment variable in this example, but it is not required to do so.
 
@@ -147,7 +147,7 @@ Finally, you will need to define some input rules to validate the value against.
 
 They will then be visible when managing the startup for a server in both the Admin CP and on the Front-End.
 
-<figure><img src=".gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
 
 ## List of default variables
 
