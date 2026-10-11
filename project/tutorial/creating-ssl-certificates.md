@@ -1,10 +1,10 @@
 # Creating SSL Certificates
 
-This tutorial briefly covers creating new SSL certificates for your panel and wings.
+This tutorial covers creating SSL certificates for your panel and Wings.
 
-## Method 1: Certbot
-
-To begin, we will install certbot, a simple script that automatically renews our certificates and allows much easier creation of them. The command below is for Ubuntu distributions, but you can always check [Certbot's official site](https://certbot.eff.org/) for installation instructions. We have also included a command below to install certbot's Nginx/Apache plugin so you won't have to stop your webserver.
+{% tabs %}
+{% tab title="Method 1: Certbot" %}
+Install Certbot and the plugin for your web server. These commands are for Ubuntu.
 
 ```bash
 sudo apt update
@@ -15,56 +15,54 @@ sudo apt install -y python3-certbot-nginx
 sudo apt install -y python3-certbot-apache
 ```
 
-## Creating a Certificate
+### Create a certificate
 
-After installing the certbot, we need to generate a certificate. There are a couple of ways to do that, but the easiest is to use the web server-specific certbot plugin you just installed. For Wings-only machines that don't need a web server, use the standalone or DNS method of the certbot as you don't need a web server for it.
+Replace `example.com` with your domain. Add another `-d` flag for each additional domain.
 
-Then, in the command below, you should replace `example.com` with the domain you would like to generate a certificate for. When you have multiple domains you would like certificates for, simply add more `-d anotherdomain.com` flags to the command. You can also look into generating a wildcard certificate but that is not covered in this tutorial.
+Use the web-server plugin where possible. For Wings-only machines, use the standalone or DNS method.
 
-When you are using certbot's Nginx/Apache plugin, you won't need to restart your webserver to have the certificate applied assuming that you've already configured the webservers to use SSL as instructed in the [web server configuration step](../panel/webserver-configuration.md).
+If your web server already uses SSL, Certbot applies the certificate without a restart. Follow the [web server configuration](../panel/webserver-configuration.md) first.
 
-### HTTP challenge
+#### HTTP challenge
 
-HTTP challenge requires you to expose port 80 for the challenge verification.
+The HTTP challenge requires port `80` to be accessible.
 
 ```bash
 # Nginx
 certbot certonly --nginx -d example.com
 # Apache
 certbot certonly --apache -d example.com
-# Standalone - Use this if neither works. Make sure to stop your webserver first when using this method.
+# Standalone — stop your web server first
 certbot certonly --standalone -d example.com
 ```
 
-### DNS challenge
+#### DNS challenge
 
-DNS challenge requires you to create a new TXT DNS record to verify domain ownership, instead of having to expose port 80. The instructions are displayed when you run the certbot command below.
+The DNS challenge verifies ownership with a TXT record. It does not require port `80`.
 
 ```bash
 certbot -d example.com --manual --preferred-challenges dns certonly
 ```
 
-### Auto Renewal
+### Auto-renewal
 
-You'll also probably want to configure the automatic renewal of certificates to prevent unexpected certificate expirations. You can open crontab with `sudo crontab -e` and add the line from below to the bottom of it for attempting renewal every day at 23 (11 PM).
+Open root's crontab with `sudo crontab -e`. This job checks for renewal every day at 23:00.
 
-Deploy hook would restart the Nginx service to apply a new certificate when it's renewed successfully. Change `nginx` in the restart command to suit your own needs, such as to `apache` or `wings`.
+Change `nginx` to `apache` or `wings` when required.
 
-For advanced users, we suggest installing and using [acme.sh](https://acme.sh/) which provides more options, and is much more powerful than certbot.
-
-```bash
+```
 0 23 * * * certbot renew --quiet --deploy-hook "systemctl restart nginx"
 ```
 
 ### Troubleshooting
 
-If you get an `Insecure Connection` or SSL/TLS related error when trying to access your panel or wings, the certificate has likely expired. This can be easily fixed by renewing the SSL certificate, although using the command `certbot renew` might not do the job if port 80 is in use, as it'll return errors like: `Error: Attempting to renew cert (domain) from /etc/letsencrypt/renew/domain.conf produced an unexpected error`.
-
-This will happen especially if you're running Nginx instead of Apache. The solution for this is to use Nginx or Apache plugins with `--nginx` and `--apache`. Alternatively, you can stop Nginx, then renew the certificate, and finally restart Nginx. Replace `nginx` with your own web server or with `wings` should you be renewing the certificate for Wings.
+An `Insecure Connection` or SSL/TLS error can indicate an expired certificate. If renewal fails because port `80` is in use, use the Nginx or Apache plugin. Alternatively, stop the relevant service, renew the certificate, then start it again.
 
 {% stepper %}
 {% step %}
 #### Stop Nginx
+
+Replace `nginx` with your web server or `wings` where appropriate.
 
 ```bash
 systemctl stop nginx
@@ -82,8 +80,6 @@ certbot renew
 {% step %}
 #### Restart Nginx
 
-Once the process has completed, you can restart the Nginx service:
-
 ```bash
 systemctl start nginx
 ```
@@ -92,10 +88,136 @@ systemctl start nginx
 {% step %}
 #### Restart Wings
 
-You may also need to restart Wings as not every service is able to automatically apply an updated certificate:
+Some services require a restart before they use the renewed certificate.
 
 ```bash
 systemctl restart wings
 ```
 {% endstep %}
 {% endstepper %}
+{% endtab %}
+
+{% tab title="Method 2: acme.sh (Cloudflare API)" %}
+Use this method when the server cannot access port `80`. These commands use Ubuntu and Cloudflare DNS.
+
+```bash
+curl https://get.acme.sh | sh
+```
+
+### Create the certificate directory
+
+The panel configuration expects Certbot-compatible paths.
+
+```bash
+sudo mkdir -p /etc/letsencrypt/live/example.com
+```
+
+### Configure Cloudflare credentials
+
+Create a Cloudflare API token that can edit DNS records in the target zone. Export the token before issuing the certificate:
+
+```bash
+export CF_Token="your_cloudflare_api_token"
+export CF_Account_ID="your_cloudflare_account_id"
+export CF_Zone_ID="your_cloudflare_zone_id"
+```
+
+For a legacy Global API Key, use:
+
+```bash
+export CF_Key="your_cloudflare_api_key"
+export CF_Email="your_cloudflare_email"
+```
+
+### Issue the certificate
+
+Replace `example.com` with your domain.
+
+```bash
+acme.sh --issue --dns dns_cf -d "example.com" --server letsencrypt \
+  --key-file /etc/letsencrypt/live/example.com/privkey.pem \
+  --fullchain-file /etc/letsencrypt/live/example.com/fullchain.pem
+```
+
+### Auto-renewal
+
+acme.sh creates a renewal job after its first run. Review or adjust its schedule with:
+
+```bash
+sudo crontab -e
+```
+{% endtab %}
+
+{% tab title="Method 3: Caddy (Cloudflare API)" %}
+Use this method when Cloudflare proxy mode is enabled or port `80` is unavailable.
+
+### Install Caddy with the Cloudflare DNS plugin
+
+Caddy does not include the Cloudflare DNS plugin by default. Choose one installation method:
+
+1. Build Caddy with [`xcaddy`](https://caddyserver.com/docs/build#xcaddy).
+2. Download a custom build from [Caddy's download page](https://caddyserver.com/download).
+3. Use [caddy-ansible](https://github.com/caddy-ansible/caddy-ansible).
+
+### Create a Cloudflare API token
+
+Use Cloudflare's **Edit zone DNS** template. Restrict **Zone Resources** to the target DNS zone. Ensure an `A` or `CNAME` record points to the target server.
+
+### Store the token securely
+
+Create `/etc/caddy/.secrets.env`:
+
+```bash
+CLOUDFLARE_API_TOKEN=<your_cloudflare_api_token>
+```
+
+Restrict the file to the `caddy` user:
+
+```bash
+chown caddy:caddy /etc/caddy/.secrets.env
+chmod 0600 /etc/caddy/.secrets.env
+```
+
+### Load the environment file
+
+Update the Caddy systemd service, usually at `/etc/systemd/system/caddy.service`. Add `--envfile /etc/caddy/.secrets.env` to `ExecStart`.
+
+```ini
+[Unit]
+Description=Caddy
+Documentation=https://caddyserver.com/docs/
+After=network.target network-online.target
+Requires=network-online.target
+
+[Service]
+Type=notify
+User=caddy
+Group=caddy
+ExecStart=/usr/bin/caddy run --environ --envfile /etc/caddy/.secrets.env --config /etc/caddy/Caddyfile
+ExecReload=/usr/bin/caddy reload --config /etc/caddy/Caddyfile
+TimeoutStopSec=5s
+LimitNOFILE=1048576
+LimitNPROC=512
+PrivateTmp=true
+ProtectSystem=full
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### Configure Caddy
+
+Add a `tls` block under your domain in `/etc/caddy/Caddyfile`:
+
+```nginx
+example.com {
+  # ...
+
+  tls {
+    dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+  }
+}
+```
+{% endtab %}
+{% endtabs %}

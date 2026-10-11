@@ -16,22 +16,22 @@ Reviactyl runs on a wide range of operating systems, so pick whichever you are m
 
 This guide primarily focuses on **Ubuntu 26.04 LTS**. Extra Dependencies may or may not needed if you're using different supported OSeS.
 
-| Operating System               | Status              | Notes                                                                               |
-| ------------------------------ | ------------------- | ----------------------------------------------------------------------------------- |
-| Ubuntu 22.04                   | Fully Supported     | Requires additional repositories for PHP                                            |
-| Ubuntu 24.04                   | Fully Supported     | MariaDB can be installed without the repo setup script.                             |
-| Ubuntu 26.04                   | Fully Supported     | MariaDB can be installed without the repo setup script.                             |
-| Debian 11                      | Fully Supported     | Requires additional packages and configuration.                                     |
-| Debian 12                      | Fully Supported     | Requires additional packages and configuration.                                     |
-| Debian 12                      | Fully Supported     | Requires additional packages and configuration.                                     |
-| Debian 13                      | Fully Supported     | Requires additional packages and configuration.                                     |
-| RHEL / Rocky Linux / AlmaLinux | Fully Supported     | Extra repos are required.                                                           |
-| MacOS 15 and above             | Partially Supported | Extra configuration needed. (Only for development, not recommended for production.) |
-| Windows 10 & Above             | Not Supported\*     | Panel may behave weirdly. (Use macOS or Supported Linux Distros / or WSL)           |
+| Operating System               | Status          | Notes                                                                               |
+| ------------------------------ | --------------- | ----------------------------------------------------------------------------------- |
+| Ubuntu 22.04                   | Fully Supported | Requires additional repositories for PHP                                            |
+| Ubuntu 24.04                   | Fully Supported | MariaDB can be installed without the repo setup script.                             |
+| Ubuntu 26.04                   | Fully Supported | MariaDB can be installed without the repo setup script.                             |
+| Debian 11                      | Fully Supported | Requires additional packages and configuration.                                     |
+| Debian 12                      | Fully Supported | Requires additional packages and configuration.                                     |
+| Debian 12                      | Fully Supported | Requires additional packages and configuration.                                     |
+| Debian 13                      | Fully Supported | Requires additional packages and configuration.                                     |
+| RHEL / Rocky Linux / AlmaLinux | Fully Supported | Extra repos are required.                                                           |
+| MacOS 15 and above             | Supported       | Extra configuration needed. (Only for development, not recommended for production.) |
+| Windows 10 & Above             | WSL Only        | Requires Windows Subsystem for Linux.                                               |
 
 ## Dependencies
 
-* PHP `8.2`, `8.3`, `8.4` or `8.5` (recommended) with the following extensions: `cli`, `openssl`, `gd`, `mysql`, `PDO`, `mbstring`, `tokenizer`, `bcmath`, `xml` or `dom`, `curl`, `zip`, `pgsql`, `sqlite3`, `redis`, `intl`, and `fpm` if you are planning to use NGINX.
+* PHP `8.3`, `8.4` or `8.5` (recommended) with the following extensions: `cli`, `openssl`, `gd`, `mysql`, `PDO`, `mbstring`, `tokenizer`, `bcmath`, `xml` or `dom`, `curl`, `zip`, `pgsql`, `sqlite3`, `redis`, `intl`, and `fpm` if you are planning to use NGINX.
 * MySQL `9` **or** MariaDB `11` **or** PostgreSQL `18`
 * Redis ( `redis-server`)
 * A webserver (Apache, NGINX, Caddy, etc.)

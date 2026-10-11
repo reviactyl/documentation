@@ -4,7 +4,7 @@ This documentation covers the process for updating within the `v26.x.x` series o
 
 ## Automatic Upgrade
 
-Automatic Upgrades are available starting from `v26.10.0`. Guide will be available soon after `.01`
+Automatic Upgrades are available starting from `v26.10.x`. Previous releases do not have automatic upgrader.
 
 ## Manual Upgrade
 

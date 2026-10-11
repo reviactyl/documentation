@@ -91,7 +91,53 @@ server_name <domain>;
 {% endtab %}
 
 {% tab title="Without SSL" %}
+```nginx
+server {
+    # Replace the example <domain> with your domain name or IP address
+    listen 80;
+    server_name <domain>;
 
+    root /var/www/reviactyl/public;
+    index index.html index.htm index.php;
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    access_log off;
+    error_log  /var/log/nginx/reviactyl.app-error.log error;
+
+    # allow larger file uploads and longer script runtimes
+    client_max_body_size 100m;
+    client_body_timeout 120s;
+
+    sendfile off;
+
+    location ~ \.php$ {
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/run/php/php8.5-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param PHP_VALUE "upload_max_filesize = 100M \n post_max_size=100M";
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param HTTP_PROXY "";
+        fastcgi_intercept_errors off;
+        fastcgi_buffer_size 16k;
+        fastcgi_buffers 4 16k;
+        fastcgi_connect_timeout 300;
+        fastcgi_send_timeout 300;
+        fastcgi_read_timeout 300;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
+```
 {% endtab %}
 {% endtabs %}
 
@@ -102,16 +148,239 @@ server_name <domain>;
 sudo ln -s /etc/nginx/sites-available/reviactyl.conf /etc/nginx/sites-enabled/reviactyl.conf
 
 # You need to restart nginx regardless of OS.
-
 sudo systemctl restart nginx
 ```
 {% endtab %}
 
 {% tab title="Apache" %}
+First, remove the default Apache configuration.
 
+```apache
+a2dissite 000-default default-ssl 000-default-le-ssl
+```
+
+Now, you should paste the contents of the file below, replacing `<domain>` with your domain name being used in a file called `reviactyl.conf` and place the file in `/etc/apache2/sites-available`, or — if on RHEL, Rocky Linux, or AlmaLinux, `/etc/httpd/conf.d/`.
+
+**Note:** When using Apache, make sure you have the `libapache2-mod-php8.5` package installed or else PHP will not display on your webserver.
+
+{% tabs %}
+{% tab title="With SSL" %}
+{% hint style="warning" %}
+You cannot use direct IP to access your panel whilst using SSL
+{% endhint %}
+
+```apache
+<VirtualHost *:80>
+    # Replace the example <domain> with your domain name or IP address
+    ServerName <domain>
+
+    RewriteEngine On
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+
+</VirtualHost>
+
+<VirtualHost *:443>
+    # Replace the example <domain> with your domain name or IP address
+    ServerName <domain>
+    DocumentRoot "/var/www/reviactyl/public"
+
+    AllowEncodedSlashes On
+
+    php_value upload_max_filesize 100M
+    php_value post_max_size 100M
+
+    <Directory "/var/www/reviactyl/public">
+        Require all granted
+        AllowOverride all
+    </Directory>
+
+    SSLEngine on
+    SSLCertificateFile /etc/letsencrypt/live/<domain>/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/<domain>/privkey.pem
+
+</VirtualHost> 
+```
+{% endtab %}
+
+{% tab title="Without SSL" %}
+```apache
+<VirtualHost *:80>
+    # Replace the example <domain> with your domain name or IP address
+    ServerName <domain>
+    DocumentRoot "/var/www/reviactyl/public"
+    
+    AllowEncodedSlashes On
+    
+    php_value upload_max_filesize 100M
+    php_value post_max_size 100M
+    
+    <Directory "/var/www/reviactyl/public">
+        AllowOverride all
+        Require all granted
+    </Directory>
+</VirtualHost>
+```
+{% endtab %}
+{% endtabs %}
+
+### Enabling Configuration <a href="#enabling-configuration-1" id="enabling-configuration-1"></a>
+
+Once you've created the file above, simply run the commands below. If you are on RHEL, Rocky Linux, or AlmaLinux you do not need to run the commands below! You only need to run `systemctl restart httpd`.
+
+```bash
+# You do not need to run any of these commands on RHEL, Rocky Linux, or AlmaLinux
+sudo ln -s /etc/apache2/sites-available/reviactyl.conf /etc/apache2/sites-enabled/reviactyl.conf
+sudo a2enmod rewrite
+sudo systemctl restart apache2
+```
 {% endtab %}
 
 {% tab title="Caddy" %}
+Before adding our custom configuration, let's remove the default one. You can do it either by deleting the contents of config file or by deleting the config file completely and than creating a new one from scratch. The config file path is `/etc/caddy/Caddyfile`.
 
+To delete the config file completely, run the following command:
+
+```bash
+rm /etc/caddy/Caddyfile
+```
+
+Then continue with an editor of your choice to write the config.
+
+You should paste the contents of the file below, replacing `<domain>` with your domain name.
+
+{% tabs %}
+{% tab title="With SSL" %}
+{% hint style="warning" %}
+You cannot use direct IP to access your panel whilst using SSL
+{% endhint %}
+
+{% hint style="info" %}
+**You do not have to create SSL certificates manually**, Caddy will take care of it automatically.
+{% endhint %}
+
+```batch
+{
+    servers :443 {
+        timeouts {
+            read_body 120s
+        }
+    }
+}
+
+# Replace the example <domain> with your domain name or IP address
+<domain> {
+    root * /var/www/reviactyl/public
+
+    file_server
+
+    php_fastcgi unix//run/php/php8.5-fpm.sock {
+        root /var/www/reviactyl/public
+        index index.php
+
+        env PHP_VALUE "upload_max_filesize = 100M
+        post_max_size = 100M"
+        env HTTP_PROXY ""
+        env HTTPS "on"
+
+        read_timeout 300s
+        dial_timeout 300s
+        write_timeout 300s
+    }
+
+    header Strict-Transport-Security "max-age=16768000; preload;"
+    header X-Content-Type-Options "nosniff"
+    header X-XSS-Protection "1; mode=block;"
+    header X-Robots-Tag "none"
+    header Content-Security-Policy "frame-ancestors 'self'"
+    header X-Frame-Options "DENY"
+    header Referrer-Policy "same-origin"
+
+    request_body {
+        max_size 100m
+    }
+
+    respond /.ht* 403
+
+    log {
+        output file /var/log/caddy/reviactyl.log {
+            roll_size 100MiB
+            roll_keep_for 7d
+        }
+        level INFO
+    }
+}
+```
+
+{% hint style="info" %}
+If you are using Cloudflare DNS in proxy mode, refer to [this tutorial](../tutorial/creating-ssl-certificates.md#install-caddy-with-the-cloudflare-dns-plugin), to see how to configure Caddy to use DNS challenge for obtaining SSL certificates.
+{% endhint %}
+{% endtab %}
+
+{% tab title="Without SSL" %}
+```batch
+{
+    servers :80 {
+        timeouts {
+            read_body 120s
+        }
+    }
+}
+
+# Replace the example <domain> with your domain name or IP address
+
+<domain>:80 {
+    root * /var/www/reviactyl/public
+
+    file_server
+
+    php_fastcgi unix//run/php/php8.5-fpm.sock {
+        root /var/www/reviactyl/public
+        index index.php
+
+        env PHP_VALUE "upload_max_filesize = 100M
+        post_max_size = 100M"
+        env HTTP_PROXY ""
+        # env HTTPS "on" # IMPORTANT: this is commented out, to disable HTTPS
+
+        read_timeout 300s
+        dial_timeout 300s
+        write_timeout 300s
+    }
+
+    header Strict-Transport-Security "max-age=16768000; preload;"
+    header X-Content-Type-Options "nosniff"
+    header X-XSS-Protection "1; mode=block;"
+    header X-Robots-Tag "none"
+    header Content-Security-Policy "frame-ancestors 'self'"
+    header X-Frame-Options "DENY"
+    header Referrer-Policy "same-origin"
+
+    request_body {
+        max_size 100m
+    }
+
+    respond /.ht* 403
+
+    log {
+        output file /var/log/caddy/reviactyl.log {
+            roll_size 100MiB
+            roll_keep_for 7d
+        }
+        level INFO
+    }
+
+}
+```
+{% endtab %}
+{% endtabs %}
+
+### Enabling Configuration
+
+The final step is to restart Caddy.
+
+```shellscript
+systemctl restart caddy
+```
 {% endtab %}
 {% endtabs %}
